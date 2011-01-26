@@ -42,14 +42,14 @@ check_status() {
 	_rc=0
 	if debugfs_mounted; then
 	  # confirm the correct tracer
-	  _tracer=$(cat /sys/kernel/debug/tracing/current_tracer)
+	  _tracer=$(cat /sys/kernel/debug/tracing/current_tracer 2> /dev/null)
 	  if ! [[ "${_tracer}" = "${tracer}" ]]; then
 	    msg="Actual tracer does not match configured tracer."
 	    _rc=1
 	  fi
 
 	  # confirm the correct buffer size
-	  _buffer_size_kb=$(cat /sys/kernel/debug/tracing/buffer_size_kb)
+	  _buffer_size_kb=$(cat /sys/kernel/debug/tracing/buffer_size_kb 2> /dev/null)
 	  if ! [[ "${_buffer_size_kb}" = "${buffer_size_kb}" ]]; then
 	    msg="$msg Actual buffer size does not match configured buffer size."
 	    _rc=1
@@ -70,8 +70,10 @@ start() {
 
 	if debugfs_mounted; then
 	  # apply config
-	  echo ${tracer} > /sys/kernel/debug/tracing/current_tracer
-	  echo ${buffer_size_kb} > /sys/kernel/debug/tracing/buffer_size_kb
+	  msg="$(echo ${tracer} 2>&1 > /sys/kernel/debug/tracing/current_tracer)"
+	  [[ -n "${msg}" ]] && logger -t $prog "Error: ${msg}"
+	  msg="$(echo ${buffer_size_kb} 2>&1 > /sys/kernel/debug/tracing/buffer_size_kb)"
+	  [[ -n "${msg}" ]] && logger -t $prog "Error: ${msg}"
 	fi
 
 	check_status
