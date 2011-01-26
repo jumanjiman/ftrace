@@ -56,4 +56,7 @@ fi
 
 
 %changelog
+* Wed Jan 26 2011 Paul Morgan <jumanjiman@gmail.com> 0.1-1
+- initial packaging
+
 
