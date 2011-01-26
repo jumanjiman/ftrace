@@ -26,7 +26,7 @@ buffer_size_kb=${buffer_size_kb:-10240}
 debugfs_mounted() {
 	# returns 0 if debugfs is mounted at /sys/kernel/debug
 	# otherwise returns non-zero
-	stat -f /sys/kernel/debug | grep 'Type: debugfs' &> /dev/null
+	grep -E '/sys/kernel/debug[[:space:]]+debugfs' /etc/mtab &> /dev/null
 }
 
 check_status() {
