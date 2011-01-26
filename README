@@ -1,0 +1,23 @@
+ftrace is a kernel facility for debugging issues.
+
+If your kernel supports ftrace, this package provides
+a convenient init script to dynamically enable/disable
+ftrace in the kernel based on config file settings.
+
+This helps to: 
+* apply a consistent setting across multiple nodes
+* avoid typos from, well, typing.
+
+If your system is running a RHEL, Fedora, or a Red Hat derivative
+distribution of Linux, you can check for ftrace support by running:
+
+$ grep -i ftrace /boot/config-*
+/boot/config-2.6.35.10-74.fc14.x86_64:CONFIG_HAVE_FTRACE_NMI_ENTER=y
+/boot/config-2.6.35.10-74.fc14.x86_64:CONFIG_HAVE_DYNAMIC_FTRACE=y
+/boot/config-2.6.35.10-74.fc14.x86_64:CONFIG_HAVE_FTRACE_MCOUNT_RECORD=y
+/boot/config-2.6.35.10-74.fc14.x86_64:CONFIG_FTRACE_NMI_ENTER=y
+/boot/config-2.6.35.10-74.fc14.x86_64:CONFIG_FTRACE=y
+/boot/config-2.6.35.10-74.fc14.x86_64:CONFIG_FTRACE_SYSCALLS=y
+/boot/config-2.6.35.10-74.fc14.x86_64:CONFIG_DYNAMIC_FTRACE=y
+/boot/config-2.6.35.10-74.fc14.x86_64:CONFIG_FTRACE_MCOUNT_RECORD=y
+

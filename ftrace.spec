@@ -43,6 +43,7 @@ based on a config file.
 %files
 %defattr(-,root,root,-)
 %doc COPYING.GPLv3
+%doc README
 %config(noreplace) %{_sysconfdir}/ftrace.conf
 %{_sysconfdir}/rc.d/init.d/ftrace
 
