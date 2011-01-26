@@ -1,0 +1,128 @@
+#!/bin/bash
+#
+#	/etc/rc.d/init.d/ftrace
+#
+#	Enables or disables ftrace in the kernel
+#
+# chkconfig: 2345 00 99
+# description: Enables or disables kernel ftrace.
+#              There's no daemon or pid file.
+
+prog=$(basename $0)
+
+# Source function library.
+. /etc/init.d/functions
+
+# read the config file if it exists
+config=/etc/ftrace.conf
+[ -r ${config} ] && . ${config}
+
+# default values (if not defined in config)
+tracer=${tracer:-function}
+buffer_size_kb=${buffer_size_kb:-10240}
+
+# functions
+
+debugfs_mounted() {
+	# returns 0 if debugfs is mounted at /sys/kernel/debug
+	# otherwise returns non-zero
+	stat -f /sys/kernel/debug | grep 'Type: debugfs' &> /dev/null
+}
+
+check_status() {
+	# quietly check:
+	# - debugfs is mounted at /sys/kernel/debug
+	# - actual and configured tracer are the same
+	# - actual and configured buffer size are the same
+	# 
+	# If all the above are true, return 0.
+	# If any is not true, populate the "msg" variable and return non-zero.
+
+	msg=""
+	_rc=0
+	if debugfs_mounted; then
+	  # confirm the correct tracer
+	  _tracer=$(cat /sys/kernel/debug/tracing/current_tracer)
+	  if ! [[ "${_tracer}" = "${tracer}" ]]; then
+	    msg="Actual tracer does not match configured tracer."
+	    _rc=1
+	  fi
+
+	  # confirm the correct buffer size
+	  _buffer_size_kb=$(cat /sys/kernel/debug/tracing/buffer_size_kb)
+	  if ! [[ "${_buffer_size_kb}" = "${buffer_size_kb}" ]]; then
+	    msg="$msg Actual buffer size does not match configured buffer size."
+	    _rc=1
+	  fi
+	else
+	  msg="debugfs is not mounted at /sys/kernel/debug"
+	  _rc=1
+	fi
+	return $_rc
+}
+
+start() {
+	echo -n "Enabling ftrace: "
+
+	# attempt to mount
+	msg=$(mount -t debugfs nodev /sys/kernel/debug 2>&1)
+	[[ -n "${msg}" ]] && logger -t $prog "Error: ${msg}"
+
+	if debugfs_mounted; then
+	  # apply config
+	  echo ${tracer} > /sys/kernel/debug/tracing/current_tracer
+	  echo ${buffer_size_kb} > /sys/kernel/debug/tracing/buffer_size_kb
+	fi
+
+	check_status
+	_rc=$?
+
+	[ $_rc -eq 0 ] && echo_success || echo_failure
+	echo
+	return $_rc
+}	
+
+stop() {
+	echo -n "Disabling ftrace: "
+
+	msg=$(umount /sys/kernel/debug 2>&1)
+	[[ -n "${msg}" ]] && logger -t $prog "Error: ${msg}"
+	debugfs_mounted && _rc=1 || _rc=0
+
+	[ $_rc -eq 0 ] && echo_success || echo_failure
+	echo
+	return $_rc
+}
+
+status() {
+        echo -n "Status of ftrace: "
+
+	check_status
+	_rc=$?
+
+	[ $_rc -eq 0 ] && echo_success || echo_failure
+	echo
+	[[ -n "${msg}" ]] && logger -st $prog "Error: ${msg}"
+	return $_rc
+}
+
+case "$1" in
+    start)
+	start
+	;;
+    stop)
+	stop
+	;;
+    status)
+	status
+	;;
+    restart)
+    	stop
+	start
+	;;
+    *)
+	echo "Usage: ftrace {start|stop|status|restart}"
+	exit 1
+	;;
+esac
+exit $?
