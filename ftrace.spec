@@ -1,5 +1,5 @@
 Name:		ftrace
-Version:	0.2
+Version:	0.3
 Release:	1%{?dist}
 Summary:	Script to dynamically enable/disable kernel ftrace
 
@@ -56,6 +56,9 @@ fi
 
 
 %changelog
+* Wed Jan 26 2011 Paul Morgan <jumanjiman@gmail.com> 0.3-1
+- gracefully handle failure on kernel-xen
+
 * Wed Jan 26 2011 Paul Morgan <jumanjiman@gmail.com> 0.2-1
 - alternate method to check if debugfs is mounted
 
