@@ -1,6 +1,6 @@
 Name:		ftrace
 Version:	0.3
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Script to dynamically enable/disable kernel ftrace
 
 Group:		System Environment/Base
