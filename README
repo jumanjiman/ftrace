@@ -1,4 +1,29 @@
-ftrace is a kernel facility for debugging issues.
+ftrace is a kernel facility for debugging issues:
+
+    Ftrace is a very simple function tracer
+    -unrelated to kprobes/SystemTap- which was born
+    in the -rt patches. It uses a compiler feature to
+    insert a small, 5-byte No-Operation instruction
+    to the beginning of every kernel function, which
+    NOP sequence is then dynamically patched into
+    a tracer call when tracing is enabled by the
+    administrator. If it's disabled, the overhead
+    of the instructions is very small and not
+    measurable even in micro-benchmarks. Although
+    ftrace is the function tracer, it also includes
+    an plugin infrastructure that allows for other
+    types of tracing. Some of the tracers that are
+    currently in ftrace include a tracer to trace
+    context switches, the time it takes for a high
+    priority task to run after it was woken up, how
+    long interrupts are disabled, the time spent in
+    preemption off critical sections.
+
+    The interface to access ftrace can be found
+    in /debugfs/tracing, which are documented
+    in Documentation/ftrace.txt.
+
+    - http://kernelnewbies.org/Linux_2_6_27
 
 If your kernel supports ftrace, this package provides
 a convenient init script to dynamically enable/disable
