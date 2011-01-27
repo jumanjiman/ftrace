@@ -50,8 +50,8 @@ based on a config file.
 
 %preun
 if [ $1 -eq 0 ]; then
-  service ftrace stop
-  chkconfig --del ftrace
+  service ftrace stop || :
+  chkconfig --del ftrace &> /dev/null || :
 fi
 
 
