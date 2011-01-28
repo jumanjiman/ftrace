@@ -1,6 +1,6 @@
 Name:		ftrace
-Version:	0.3
-Release:	2%{?dist}
+Version:	0.4
+Release:	1%{?dist}
 Summary:	Script to dynamically enable/disable kernel ftrace
 
 Group:		System Environment/Base
@@ -56,6 +56,12 @@ fi
 
 
 %changelog
+* Fri Jan 28 2011 Mike Sciabica <msciabica@ise.com> 0.4-1
+- change boot sequence to run after openibd (msciabica@ise.com)
+- extend README with info from kernelnewbies.org (jumanjiman@gmail.com)
+- bump release (jumanjiman@gmail.com)
+- never fail on preun (jumanjiman@gmail.com)
+
 * Wed Jan 26 2011 Paul Morgan <jumanjiman@gmail.com> 0.3-1
 - gracefully handle failure on kernel-xen
 
