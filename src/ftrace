@@ -4,7 +4,7 @@
 #
 #	Enables or disables ftrace in the kernel
 #
-# chkconfig: 2345 06 99
+# chkconfig: 2345 99 99
 # description: Enables or disables kernel ftrace.
 #              There's no daemon or pid file.
 
