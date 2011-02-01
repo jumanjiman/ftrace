@@ -1,5 +1,5 @@
 Name:		ftrace
-Version:	0.4
+Version:	0.5
 Release:	1%{?dist}
 Summary:	Script to dynamically enable/disable kernel ftrace
 
@@ -56,6 +56,11 @@ fi
 
 
 %changelog
+* Mon Jan 31 2011 Paul Morgan <jumanjiman@gmail.com> 0.5-1
+- add init script conventions per LSB 3.2
+- exit code of init script complies with LSB 3.1.1
+- by default, start as late as possible
+
 * Fri Jan 28 2011 Mike Sciabica <msciabica@ise.com> 0.4-1
 - change boot sequence to run after openibd (msciabica@ise.com)
 - extend README with info from kernelnewbies.org (jumanjiman@gmail.com)
