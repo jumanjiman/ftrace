@@ -8,6 +8,19 @@
 # description: Enables or disables kernel ftrace.
 #              There's no daemon or pid file.
 
+### BEGIN INIT INFO
+# ref: http://refspecs.linux-foundation.org/LSB_3.2.0/LSB-Core-generic/LSB-Core-generic/facilname.html
+# Provides: ftrace
+# Required-Start: $syslog
+# Required-Stop: 
+# Default-Start: 2345
+# Default-Stop: 99
+# Short-Description: Enables or disables ftrace in the kernel
+# Description:      Enables the ftrace kernel facility, 
+#    either dynamically or persistently across reboots
+### END INIT INFO
+
+
 # exit codes
   # standard codes per
   # http://refspecs.freestandards.org/LSB_3.1.1/LSB-Core-generic/LSB-Core-generic/iniscrptact.html
