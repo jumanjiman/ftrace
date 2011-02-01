@@ -8,6 +8,21 @@
 # description: Enables or disables kernel ftrace.
 #              There's no daemon or pid file.
 
+# exit codes
+  # standard codes per
+  # http://refspecs.freestandards.org/LSB_3.1.1/LSB-Core-generic/LSB-Core-generic/iniscrptact.html
+  rc_OK=0
+  rc_dead_and_pid_file_exists=1
+  rc_dead_and_lock_exists=2
+  rc_not_running=3
+  rc_unimplemented=3
+  rc_unknown=4
+  # app-specific codes (150-199)
+  rc_bad_tracer=150
+  rc_bad_buffer_size=151
+  rc_debugfs_not_mounted=152
+  rc_debugfs_improperly_mounted=153
+
 prog=$(basename $0)
 
 # Source function library.
@@ -45,18 +60,18 @@ check_status() {
 	  _tracer=$(cat /sys/kernel/debug/tracing/current_tracer 2> /dev/null)
 	  if ! [[ "${_tracer}" = "${tracer}" ]]; then
 	    msg="Actual tracer does not match configured tracer."
-	    _rc=1
+	    _rc=$rc_bad_tracer
 	  fi
 
 	  # confirm the correct buffer size
 	  _buffer_size_kb=$(cat /sys/kernel/debug/tracing/buffer_size_kb 2> /dev/null)
 	  if ! [[ "${_buffer_size_kb}" = "${buffer_size_kb}" ]]; then
 	    msg="$msg Actual buffer size does not match configured buffer size."
-	    _rc=1
+	    _rc=$rc_bad_buffer_size
 	  fi
 	else
 	  msg="debugfs is not mounted at /sys/kernel/debug"
-	  _rc=1
+	  _rc=$rc_debugfs_not_mounted
 	fi
 	return $_rc
 }
@@ -76,6 +91,8 @@ start() {
 	  [[ -n "${msg}" ]] && logger -t $prog "Error: ${msg}"
 	fi
 
+	# per http://refspecs.freestandards.org/LSB_3.1.1/LSB-Core-generic/LSB-Core-generic/iniscrptact.html
+	# this should return 0 if we are started, even on a service already running
 	check_status
 	_rc=$?
 
@@ -89,8 +106,10 @@ stop() {
 
 	msg=$(umount /sys/kernel/debug 2>&1)
 	[[ -n "${msg}" ]] && logger -t $prog "Error: ${msg}"
-	debugfs_mounted && _rc=1 || _rc=0
+	debugfs_mounted && _rc=$rc_debugfs_improperly_mounted || _rc=$rc_OK
 
+	# per http://refspecs.freestandards.org/LSB_3.1.1/LSB-Core-generic/LSB-Core-generic/iniscrptact.html
+	# we should return 0 if stopped, even if we were already stopped or not enabled
 	[ $_rc -eq 0 ] && echo_success || echo_failure
 	echo
 	return $_rc
@@ -124,7 +143,7 @@ case "$1" in
 	;;
     *)
 	echo "Usage: ftrace {start|stop|status|restart}"
-	exit 1
+	exit $rc_unimplemented
 	;;
 esac
 exit $?
