@@ -55,6 +55,12 @@ if [ $1 -eq 0 ]; then
 fi
 
 
+%post
+if [ $1 -gt 0 ]; then
+  chkconfig --add ftrace &> /dev/null || :
+fi
+
+
 %changelog
 * Mon Jan 31 2011 Paul Morgan <jumanjiman@gmail.com> 0.5-1
 - add init script conventions per LSB 3.2
