@@ -117,6 +117,14 @@ start() {
 stop() {
 	echo -n "Disabling ftrace: "
 
+	if debugfs_mounted; then
+          # apply config
+          msg="$(echo nop 2>&1 > /sys/kernel/debug/tracing/current_tracer)"
+          [[ -n "${msg}" ]] && logger -t $prog "Error: ${msg}"
+          msg="$(echo 0 2>&1 > /sys/kernel/debug/tracing/tracing_enabled)"
+          [[ -n "${msg}" ]] && logger -t $prog "Error: ${msg}"
+        fi
+
 	msg=$(umount /sys/kernel/debug 2>&1)
 	[[ -n "${msg}" ]] && logger -t $prog "Error: ${msg}"
 	debugfs_mounted && _rc=$rc_debugfs_improperly_mounted || _rc=$rc_OK
