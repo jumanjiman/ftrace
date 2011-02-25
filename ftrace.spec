@@ -1,5 +1,5 @@
 Name:		ftrace
-Version:	0.5
+Version:	0.6
 Release:	1%{?dist}
 Summary:	Script to dynamically enable/disable kernel ftrace
 
@@ -62,6 +62,10 @@ fi
 
 
 %changelog
+* Thu Feb 24 2011 Paul Morgan <jumanjiman@gmail.com> 0.6-1
+- better stop function for init script (jumanjiman@gmail.com)
+- populate /etc/rc*.d appropriately at install-time (jumanjiman@gmail.com)
+
 * Mon Jan 31 2011 Paul Morgan <jumanjiman@gmail.com> 0.5-1
 - add init script conventions per LSB 3.2
 - exit code of init script complies with LSB 3.1.1
